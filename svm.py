@@ -118,6 +118,10 @@ def testClassification(sampleSize,x,y,w):
 # print y
 # print w
 
-w2, b2 = kp.ker_perceptron(x, y, np.dot)
-print(w2, b2)
-plot.plot(x, y, w2, b2)
+k = np.dot
+w2 = kp.ker_perceptron(x, y, k)
+w3 = 0
+for i in xrange(len(x)):
+    w3 = np.add(w3, w2[i] * x[i])
+b = np.sum([w2[i] for i in xrange(len(w2))])
+plot.plot(x,y,w3,b)
