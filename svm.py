@@ -1,8 +1,11 @@
 # -*- coding: utf-8 -*-
 from __future__ import division #division en flottants par défaut
+import sys
 import numpy as np
 import random
 import os, pickle
+import plot
+import kernel_perceptron as kp
 
 # http://stackoverflow.com/questions/17784587/gradient-descent-using-python-and-numpy-machine-learning
 
@@ -62,14 +65,18 @@ def genData(averages,N):
 file = "data"
 curdir = os.path.dirname(os.path.realpath(__file__))+"/"
 
-sampleSize = 1000
-averages = [1,2]
+try:
+    sampleSize = int(sys.argv[1])
+except IndexError:
+    sampleSize = 50
+
+averages = [1,5]
 
 if os.path.isfile(curdir+file):
     f = open(curdir+file,'r+')
     (x,y,size) = pickle.load(f)
     if size<>sampleSize:
-        print size, sampleSize, "totototo"
+        print 'Taille de l\'echantillon : ', sampleSize
         f.truncate()
         (x,y) = genData(averages,sampleSize)
         pickle.dump((x,y,sampleSize),f)
@@ -82,7 +89,7 @@ else:
 
 iterations = 400
 w = sgd(x,y,np.zeros(len(x[0])+1),iterations,1,L,0.01)
-print "w",w
+# print "w",w
 
 def classify(xi,w):
     return np.sign(np.dot(w[:-1],xi) + w[-1])
@@ -94,18 +101,23 @@ def testClassification(sampleSize,x,y,w):
     goodC = 0
     badC = 0
     for i in xrange(2*sampleSize):
-        print classify(x[i],w),y[i]
-        print "valeur: ", printClassify(x[i],w)
+#        print classify(x[i],w),y[i]
+#        print "valeur: ", printClassify(x[i],w)
         if classify(x[i],w)==y[i]:
             goodC +=1
         else:
             badC += 1
-    print "Good : ", goodC
-    print "Bad : ", badC
+#    print "Good : ", goodC
+#    print "Bad : ", badC
     print "rate : ", goodC/sampleSize/2
+    plot.plot(x, y, w[:-1], w[-1])
 
 # w[2] = 0.7
-testClassification(sampleSize,x,y,w)
-print x
-print y
-print w
+# testClassification(sampleSize,x,y,w)
+# print x
+# print y
+# print w
+
+w2, b2 = kp.ker_perceptron(x, y, np.dot)
+print(w2, b2)
+plot.plot(x, y, w2, b2)
