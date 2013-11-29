@@ -1,0 +1,2 @@
+Pour utiliser octave (et voicebox) avec file.wav et écrire les coefficients cepstraux dans data.mat, taper
+octave --eval "cepstraux('file.wav','data.mat')"
