@@ -1,7 +1,6 @@
 function cepstraux(wavfile, matfile)
   s=wavread(wavfile);
   c=melcepst(s);
-  fprintf(matfile);
-  save(matfile, 'c');
+  save(matfile,'c','-mat-binary')  
   exit
 end
