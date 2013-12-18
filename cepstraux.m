@@ -1,6 +1,7 @@
 function cepstraux(wavfile, matfile)
   s=wavread(wavfile);
   c=melcepst(s, 11025, 'e0dD');
-  save(matfile,'c', '-mat-binary');  
+  [mu, sig, pi] = gaussmix(c, [], [], 4);
+  save(matfile, 'mu', 'sig', 'pi', '-mat-binary');  
   exit
 end
