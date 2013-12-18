@@ -20,10 +20,11 @@ def createDataFiles():
                     wavName = fileName+'.wav'
                     matName = fileName+'.mat'
                     #print string.join(['octave','--eval','cepstraux('+'\''+wavName+'\',\''+matName+'\')'])
-                    subprocess.Popen(['octave','--eval','cepstraux('+'\''+wavName+'\',\''+matName+'\')'])
-                    # triplet=octaveIO.retrieve(matName,['mu','sig','pi'])
-                    # res.append(triplet)
+                    subprocess.call(['octave','--eval','cepstraux('+'\''+wavName+'\',\''+matName+'\')'])
+                    triplet=octaveIO.retrieve(matName,['mu','sig','pi'])
+                    res.append(triplet)
         return res
                     
 
-createDataFiles()
+res = createDataFiles()
+print res
