@@ -8,4 +8,7 @@ def retrieve(matFile,matNames):
     res = [mat[matName] for matName in matNames]
     return res
 
+def write(matFile,obj,objName):
+    scipy.io.savemat(matFile,{objName:obj})
+
 
