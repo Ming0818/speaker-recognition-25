@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # traitement global des fichiers wav
-import os,numpy,octaveIO,string,subprocess
+import os,numpy as np,octaveIO as oio,string,subprocess
 
 
 
@@ -21,16 +21,19 @@ def createDataFiles():
                     matName = fileName+'.mat'
                     #print string.join(['octave','--eval','cepstraux('+'\''+wavName+'\',\''+matName+'\')'])
                     subprocess.call(['octave','--eval','cepstraux('+'\''+wavName+'\',\''+matName+'\')'])
-                    triplet=octaveIO.retrieve(matName,['c','mu','sig','pi'])
+                    triplet=oio.retrieve(matName,['c','mu','sig','pi'])
                     res.append(triplet)
         return res    
 
 def gmms(data):
-    c0 = sum(c for (c,mu,sig,pi) in data,[])
+    c0 = np.concatenate([c for (c,mu,sig,pi) in data])
     mfccFile = 'data/grossmMat.mat'
-    write(mfccFile,c0,'c0')
-    subprocess.call(['octave''--eval','gmm(\''+mfccFile+'\', \'data/grossMatOut.mat\''])
-    triplet0=octaveIO.retrieve(matName,['mu0','sig0','pi0'])
+    matName = 'data/grossMatOut.mat'
+    oio.write(mfccFile,c0,'c')
+    subprocess.call(['octave','--eval','gmm(\''+mfccFile+'\', \''+matName+'\')'])
+    triplet0=oio.retrieve(matName,['mu','sig','pi'])
 
 res = createDataFiles()
 print res
+
+gmms(res)
