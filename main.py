@@ -21,10 +21,16 @@ def createDataFiles():
                     matName = fileName+'.mat'
                     #print string.join(['octave','--eval','cepstraux('+'\''+wavName+'\',\''+matName+'\')'])
                     subprocess.call(['octave','--eval','cepstraux('+'\''+wavName+'\',\''+matName+'\')'])
-                    triplet=octaveIO.retrieve(matName,['mu','sig','pi'])
+                    triplet=octaveIO.retrieve(matName,['c','mu','sig','pi'])
                     res.append(triplet)
-        return res
-                    
+        return res    
+
+def gmms(data):
+    c0 = sum(c for (c,mu,sig,pi) in data,[])
+    mfccFile = 'data/grossmMat.mat'
+    write(mfccFile,c0,'c0')
+    subprocess.call(['octave''--eval','gmm(\''+mfccFile+'\', \'data/grossMatOut.mat\''])
+    triplet0=octaveIO.retrieve(matName,['mu0','sig0','pi0'])
 
 res = createDataFiles()
 print res
