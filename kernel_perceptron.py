@@ -7,7 +7,7 @@ import time
 import plot
 
 def ker_perceptron(oldX, y, k):
-    stop = 100000
+    stop = 10
     n = len(oldX)
     x = np.array([np.append(oldX[i],1) for i in xrange(n)])
     w = np.zeros(shape=(n,))

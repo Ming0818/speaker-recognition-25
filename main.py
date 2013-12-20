@@ -69,7 +69,7 @@ def build_labels(name,dic,mu,pi):
             val=1
         else:
             val=-1
-        for i in dick[key]:
+        for i in dic[key]:
             res[i]=val
 
 def make_training_set(name,dic,m):
@@ -90,3 +90,7 @@ res, mu, pi, dic = createDataFiles(100)
 #print res
 print dic
 print 'GMM sur l\'ensemble des points\n'
+
+mu0, sig0 = gmms(res)
+
+w = train('antoine2', mu0, sig0, mu, pi)
