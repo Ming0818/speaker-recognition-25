@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # traitement global des fichiers wav
 import os,numpy as np,octaveIO as oio,string,subprocess
-
-
+import fisher
+import random
 
 def createDataFiles(nbc):
     if not os.path.exists('data'):
@@ -61,9 +61,32 @@ def gmms(data):
     mu0, sig0=oio.retrieve(gmmFile,['mu','sig'])
     return mu0, sig0
 
+def build_labels(name,dic,mu,pi):
+    size = sum(len(val) for val in dic.itervalues())
+    res = np.zeros(shape=(size,))
+    for key in dic:
+        if key==name:
+            val=1
+        else:
+            val=-1
+        for i in dick[key]:
+            res[i]=val
+
+def make_training_set(name,dic,m):
+    """Take m random adversaries to help train <name>"""
+    nameKeys=dic[name]
+    advKeys=[dic[key] for key in dic if key<>name]
+    advs = random.sample(advKeys,min(len(advKeys),m))
+    return {name : nameKeys, '#mechant' : advs}
+
+def train(name,mu0,sig0,mu,pi):
+    y = build_labels(name,dic,mu,pi)
+    x=range(len(y))
+    k = lambda i,j : fisher.K(x,i,j,mu[i],mu[j],sig0,pi[i],pi[j],mu0)
+    w = ker_perceptron(x,y,k)
+    return w
+
 res, mu, pi, dic = createDataFiles(100)
 #print res
 print dic
 print 'GMM sur l\'ensemble des points\n'
-
-gmms(res)
