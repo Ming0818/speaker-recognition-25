@@ -3,6 +3,7 @@
 import os,numpy as np,octaveIO as oio,string,subprocess
 import fisher
 import random
+import kernel_perceptron as kp
 
 def createDataFiles(nbc):
     if not os.path.exists('data'):
@@ -31,7 +32,7 @@ def createDataFiles(nbc):
                     nbv=l/nbc
                     #print nbc, l, nbv
                     dic[name]=[]
-                    for j in xrange(nbv):
+                    for j in xrange(min(nbv, 3)):
                         binf=j*nbc
                         bsup=(j+1)*nbc
                         #print 'binf, bsup :', binf, bsup
@@ -71,6 +72,7 @@ def build_labels(name,dic,mu,pi):
             val=-1
         for i in dic[key]:
             res[i]=val
+    return res
 
 def make_training_set(name,dic,m):
     """Take m random adversaries to help train <name>"""
@@ -82,8 +84,15 @@ def make_training_set(name,dic,m):
 def train(name,mu0,sig0,mu,pi):
     y = build_labels(name,dic,mu,pi)
     x=range(len(y))
-    k = lambda i,j : fisher.K(x,i,j,mu[i],mu[j],sig0,pi[i],pi[j],mu0)
-    w = ker_perceptron(x,y,k)
+    print 'x:', x
+    print 'y:', y
+    def k(vi,vj): 
+        i=vi[0]
+        j=vj[0]
+        print i, j
+        res = fisher.K(x,i,j,mu[i],mu[j],sig0,pi[i],pi[j],mu0) + vi[1]*vj[1]
+        return res
+    w = kp.ker_perceptron(x,y,k)
     return w
 
 res, mu, pi, dic = createDataFiles(100)
@@ -93,4 +102,5 @@ print 'GMM sur l\'ensemble des points\n'
 
 mu0, sig0 = gmms(res)
 
-w = train('antoine2', mu0, sig0, mu, pi)
+w = train('thomas', mu0, sig0, mu, pi)
+print w
