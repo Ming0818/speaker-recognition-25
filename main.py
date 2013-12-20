@@ -2,7 +2,7 @@
 # traitement global des fichiers wav
 import os,numpy as np,octaveIO as oio,string,subprocess
 import fisher
-
+import random
 
 def createDataFiles():
     if not os.path.exists('data'):
@@ -49,6 +49,13 @@ def build_labels(name,dic,mu,pi):
             val=-1
         for i in dick[key]:
             res[i]=val
+
+def make_training_set(name,dic,m):
+    """Take m random adversaries to help train <name>"""
+    nameKeys=dic[name]
+    advKeys=[dic[key] for key in dic if key<>name]
+    advs = random.sample(advKeys,min(len(advKeys),m))
+    return {name : nameKeys, '#mechant' : advs}
 
 def train(name,mu0,sig0,mu,pi):
     y = build_labels(name,dic,mu,pi)
