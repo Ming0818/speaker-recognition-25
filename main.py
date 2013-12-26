@@ -11,8 +11,8 @@ def createDataFiles(nbc):
         print "Please add some data, I don't work for free"
     else:
         res = [] #contiendra l'ensemble des mfccs
-        muT=[]
-        piT=[]
+        mu=[]
+        pi=[]
         dic={}
         num=0
         for root, dirs, files in os.walk('data'):
@@ -32,27 +32,26 @@ def createDataFiles(nbc):
                     nbv=l/nbc
                     #print nbc, l, nbv
                     dic[name]=[]
-                    for j in xrange(min(nbv, 3)):
+                    for j in xrange(nbv):
                         binf=j*nbc
                         bsup=(j+1)*nbc
                         #print 'binf, bsup :', binf, bsup
                         newvf=c[binf:bsup] #vecteur de frames à ajouter
                         #print np.shape(newvf)
                         #print newvf
-                        res.append(newvf) #ajout dans l'ensemble complet
+                        res.append(newvf) #ajout dans l'ensemble global
 
                         #Calcul des gmm
                         subprocess.call(['octave','--silent', '--eval','gmm(\''+mfccFile+'\', \''+gmmFile+'\')'])
-                        mu, pi = oio.retrieve(gmmFile, ['mu', 'pi'])
-                        muT.append(mu)
-                        piT.append(pi)
+                        mu_j, pi_j = oio.retrieve(gmmFile, ['mu', 'pi'])
+
+                        mu.append(mu_j)
+                        pi.append(pi_j)
                         dic[name].append(num)
                         num+=1
-        return res, muT, piT, dic    
+        return res, mu, pi, dic    
 
 def gmms(data):
-    #print data
-    #print [np.shape(x) for x in data]
     c0 = np.concatenate(data)
     mfccFile = 'data/mfccs.mat'
     gmmFile = 'data/gmms.mat'
@@ -84,12 +83,12 @@ def make_training_set(name,dic,m):
 def train(name,mu0,sig0,mu,pi):
     y = build_labels(name,dic,mu,pi)
     x=range(len(y))
-    print 'x:', x
-    print 'y:', y
+    #print 'x:', x
+    #print 'y:', y
     def k(vi,vj): 
         i=vi[0]
         j=vj[0]
-        print i, j
+        #print vi, vj
         res = fisher.K(x,i,j,mu[i],mu[j],sig0,pi[i],pi[j],mu0) + vi[1]*vj[1]
         return res
     w = kp.ker_perceptron(x,y,k)
@@ -97,10 +96,19 @@ def train(name,mu0,sig0,mu,pi):
 
 res, mu, pi, dic = createDataFiles(100)
 #print res
-print dic
 print 'GMM sur l\'ensemble des points\n'
 
 mu0, sig0 = gmms(res)
 
 w = train('thomas', mu0, sig0, mu, pi)
-print w
+#print w
+
+def evalKP(w, mu, pi, mu0, sig0, dic):
+    T=len(w)
+    for name in dic:
+        for i in dic[name]:
+            #calcule <w,i-eme>
+            v=[w[j]*fisher.K(w, j, i, mu[j], mu[i], sig0, pi[j], pi[j], mu0) for j in xrange(T)]
+            print name, i, ' : ', sum(v)
+
+evalKP(w, mu, pi, mu0, sig0, dic)

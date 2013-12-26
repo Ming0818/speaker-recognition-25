@@ -5,7 +5,8 @@ import numpy as np
 
 
 def nim(m,pi,T):
-    res = T*pi[m] #hypothèse à la lecture de l'article + http://www.ee.ic.ac.uk/hp/staff/dmb/voicebox/doc/voicebox/gaussmix.html
+    res = T*(pi[m][0]) #hypothèse à la lecture de l'article + http://www.ee.ic.ac.uk/hp/staff/dmb/voicebox/doc/voicebox/gaussmix.html
+    return res
 
 def K(x,i,j,mu_i,mu_j,sig0,pi_i,pi_j,mu0):
     T = len(x)
@@ -22,5 +23,3 @@ def K(x,i,j,mu_i,mu_j,sig0,pi_i,pi_j,mu0):
         res += ni[m]*nj[m]*np.dot(ti,tj)
     return res
         
-
-# def Fisher()
