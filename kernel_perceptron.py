@@ -26,3 +26,21 @@ def ker_perceptron(oldX, y, k):
     return w
 
 
+def kp(x, y, k, stop=100000):
+    n=len(x)
+    w=np.zeros(n)
+    b=y[0]
+    w[0] = y[0] #initialisation de w
+
+    valeurs = [y[i]*(w[0]*k(x[i], x[0]) + b) for i in xrange(n)]
+    negatifs = [i for i in xrange(n) if valeurs[i] < 0]
+    while(negatifs and (stop > 0)):
+        j=negatifs[0]
+        w[j] = w[j] + y[j]
+        b = b + y[j]
+        deltaValeurs = [y[i]*(y[j]*k(x[i], x[j]) + 1) for i in xrange(n)]
+        valeurs=np.add(valeurs, deltaValeurs)
+        negatifs = [i for i in xrange(n) if valeurs[i] < 0]
+        stop -= 1
+    return w, b
+        
