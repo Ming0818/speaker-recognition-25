@@ -37,13 +37,13 @@ def HLgrad(xi,yi,w,eps):
 
 L = LossFun(HingeLoss,HLgrad)
 
-def sgd(x,y,w,Tmax,eta,L,eps,test=testDef):
+def sgd(x,y,w,Tmax,eta,L,eps,C,test=testDef):
     eta1 = eta
     t = 1
     theta = 0
     while(t <= Tmax and not(test(x))):   
         lossGrads = np.array([L.grad(x[i],y[i],w,eps) for i in xrange(len(x))])
-        v = np.add (np.concatenate([w[:-1],np.array([0])]),10*lossGrads.sum(axis=0)/(len(x)))
+        v = np.add (np.concatenate([w[:-1],np.array([0])]),C*lossGrads.sum(axis=0)/(len(x)))
         eta = eta1 / np.sqrt(t)
         w = np.subtract(w,eta * v)
         t = t+1
