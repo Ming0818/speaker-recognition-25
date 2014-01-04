@@ -9,8 +9,8 @@ def plot(x, y, w, b):
     x1min = np.min(x[:, 0]) - 2
     x2min = np.min(x[:, 1]) - 2
 
-    s1 = [x[i] for i in xrange(len(x)) if y[i] == 1]
-    s2 = [x[i] for i in xrange(len(x)) if y[i] == -1]
+    s1 = [x[i] for i in xrange(len(x)) if y[i] >= 0]
+    s2 = [x[i] for i in xrange(len(x)) if y[i] < 0]
     s11 = [s1[i][0] for i in xrange(len(s1))]
     s12 = [s1[i][1] for i in xrange(len(s1))]
     s21 = [s2[i][0] for i in xrange(len(s2))]

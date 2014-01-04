@@ -11,4 +11,6 @@ def retrieve(matFile,matNames):
 def write(matFile,obj,objName):
     scipy.io.savemat(matFile,{objName:obj})
 
+def writeDic(matFile, dic):
+    scipy.io.savemat(matFile, dic)
 
