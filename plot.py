@@ -28,3 +28,12 @@ def plot(x, y, w, b):
     plt.axis([x1min, x1max, x2min, x2max])
     plt.show()
 
+def plotFindC(res,legend,e):
+    plt.plot(np.log2(res[0,:]),res[1,:], 'r--')
+    # plt.show()
+    plt.ylabel('accuracy')
+    plt.xlabel('log C')
+    # plt.text(4, e - 0.1, legend)
+    plt.title(legend)
+    plt.subplots_adjust(top=0.7)
+    plt.savefig('bestC.png')
