@@ -25,8 +25,9 @@ def createDataFiles(nbc, nbG):
             #print root,dirs,files
             for file in files:
                 if file.endswith(".wav"):
-                    #print "treating file "+file
+                    print "treating file "+file
                     nameInDic=os.path.split(root)[-1]
+                    print "-> "+nameInDic
                     name=os.path.splitext(file)[0]
                     fileName = os.path.join(root, name)
                     wavFile = fileName+'.wav'
@@ -109,9 +110,7 @@ def train(name,mu0,sig0,mu,pi, xApp, yApp, xTest, yTest,C=1):
     def k(i,j):
         res = fisher.K(xApp,i,j,mu[i],mu[j],sig0,pi[i],pi[j],mu0)
         return res
-    qp(xApp, yApp, xTest, yTest, k, C)
-    # w, b = qp(x, y, k, C)
-    # return w, b
+    return qp(xApp, yApp, xTest, yTest, k, C)
 
 def predKP(w, b, mu, pi, mu0, sig0, dic, num):
     print 'prediction...'
@@ -149,22 +148,23 @@ def test_make_sets(r1, r2):
 # test_make_sets(0.5, 1.2)
 
 
-nbG=4
-name='sarkozy'
+nbG=5
+C=0.025
+name='L4'
 nbc=100
 r1=0.6
-r2=1.1
+r2=2.0
 
 mfccs, mu, pi, dic = createDataFiles(nbc, nbG)
 
 xApp, yApp, xTest, yTest = make_sets(name, dic, r1, r2)
-print xApp
 
 print 'GMM sur l\'ensemble des points\n'
 mu0, sig0 = gmms([mfccs[i] for i in xApp], nbG)
 
-train(name, mu0, sig0, mu, pi, xApp, yApp, xTest, yTest)
-# w, b = train('sarkozy', mu0, sig0, mu, pi, dicApp)
+# train(name, mu0, sig0, mu, pi, xApp, yApp, xTest, yTest)
+w, b, acc = train(name, mu0, sig0, mu, pi, xApp, yApp, xTest, yTest, C)
+print acc
 
 # print 'evaluation...'
 # rho = []
