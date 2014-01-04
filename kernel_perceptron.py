@@ -38,9 +38,11 @@ def kp(x, y, k, stop=100000):
         j=negatifs[0]
         w[j] = w[j] + y[j]
         b = b + y[j]
-        deltaValeurs = [y[i]*(y[j]*k(x[i], x[j]) + 1) for i in xrange(n)]
+        deltaValeurs = [y[i]*(y[j]*k(x[i], x[j]) + y[j]) for i in xrange(n)]
         valeurs=np.add(valeurs, deltaValeurs)
         negatifs = [i for i in xrange(n) if valeurs[i] < 0]
         stop -= 1
+    if (stop==0):
+        print 'Kernel perceptron didn\'t converge !'
     return w, b
         
