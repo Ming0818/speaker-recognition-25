@@ -20,10 +20,10 @@ averages = [1,5]
 sample=20
 (xApp, yApp) = genData(averages, sample)
 k=np.dot
-alp,b= kp.kp(xApp, yApp, k)
+alp,b,nIter= kp.kp(xApp, yApp, k, log=True, logFile='test_kp', step=3)
 
 w=np.dot(alp, xApp)
 yPred=[np.dot(w, xApp[i])+b for i in xrange(2*sample)]
 # print np.multiply(yApp, yPred)
 
-plot.plot(xApp,yApp,w,b)
+plot.plot(xApp,yApp,w,b,title='Kernel perceptron after '+str(nIter)+' iterations', saveFile='kp.png')

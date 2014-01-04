@@ -43,7 +43,7 @@ def createDataFiles(nbc, nbG):
                     if(not dicApp.has_key(nameInDic)):
                         dicApp[nameInDic]=[]
                         dicTest[nameInDic]=[]
-                    for j in xrange(min(nbv, 5)):
+                    for j in xrange(min(nbv, 3)):
                         binf=j*nbc
                         bsup=(j+1)*nbc
                         newvf=c[binf:bsup] #vecteur de frames à ajouter
@@ -109,18 +109,8 @@ def train(name,mu0,sig0,mu,pi,dic):
     def k(i,j):
         res = fisher.K(x,i,j,mu[i],mu[j],sig0,pi[i],pi[j],mu0)
         return res
-    w, b = kp.kp(x,y,k)
-    # w = qp(y, 1, k)
+    w, b, _ = kp.kp(x,y,k)
     return w, b
-
-nbG=4
-mfccs, mu, pi, dicApp, dicTest, numApp = createDataFiles(100, nbG)
-#print res
-print 'GMM sur l\'ensemble des points\n'
-
-mu0, sig0 = gmms(mfccs, nbG)
-
-w, b = train('sarkozy', mu0, sig0, mu, pi, dicApp)
 
 def predKP(w, b, mu, pi, mu0, sig0, dic, num):
     print 'prediction...'
@@ -131,20 +121,30 @@ def predKP(w, b, mu, pi, mu0, sig0, dic, num):
             #calcule <w,i-eme>
             v=[w[j]*fisher.K(w, j, i+num, mu[j], mu[i], sig0, pi[j], pi[j], mu0) for j in xrange(T)]
             tmp=sum(v) + b
-            yPred.appen(tmp)
+            yPred.append(tmp)
             #print name, i+num, ' : ', tmp
     return yPred
             
 def evalKP(yPred, nameL, dic, seuil=0):
-    ok = 0;
+    ok = 0
     tot = sum(len(val) for val in dic.itervalues())
+    j=0
     for name in dic:
         for i in dic[name]:
             if(name==nameL):
-                ok+=(tmp-seuil > 0)
+                ok+=(yPred[j]-seuil > 0)
             else:
-                ok+=(tmp-seuil < 0)
+                ok+=(yPred[j]-seuil < 0)
+            j+=1
     return ok, ok/float(tot)
+
+nbG=4
+mfccs, mu, pi, dicApp, dicTest, numApp = createDataFiles(100, nbG)
+print 'GMM sur l\'ensemble des points\n'
+
+mu0, sig0 = gmms(mfccs, nbG)
+
+w, b = train('sarkozy', mu0, sig0, mu, pi, dicApp)
 
 print 'evaluation...'
 rho = []
