@@ -84,10 +84,16 @@ def make_training_set(name,dic,m):
 #r1: taux de données de name utilisé pour l'apprentissage
 #r2*|{données de name utilisé pour l'apprentissage}|: nombre de données hors name pour l'apprentissage
 #le reste pour les tests
-def make_sets(name, dic, r1, r2):
+#leaveOut est une liste de noms de locuteurs éventuels à ne pas inclure dans le training
+def make_sets(name, dic, r1, r2,leaveOut=[]):
     nameKeys=dic[name]
-    advKeys_=np.concatenate([dic[key] for key in dic if key<>name])
-    advKeys=advKeys_.tolist()
+    advKeys_=np.concatenate([dic[key] for key in dic if (key<>name and key not in leaveOut)])
+    if leaveOut:
+        advKeysLeaveOut_ = np.concatenate([dic[key] for key in dic if (key<>name and key in leaveOut)])
+        advKeysLeaveOut=advKeysLeaveOut_.tolist()
+    else:
+        advKeysLeaveOut = []
+    advKeys=advKeys_.tolist()    
     l1=len(nameKeys)
     lp1=int(r1*l1)
     l2=len(advKeys)
@@ -95,11 +101,22 @@ def make_sets(name, dic, r1, r2):
     advs=random.sample(advKeys,lp2)
     for i in advs:
         advKeys.remove(i)
+    testLengthAdv = l2/2 # on ne teste que sur la moitié de ce qui reste pour pouvoir faire un "blind" test sur un troisième ensemble, xTest2
+    testLengthName = l1/2
     xApp=nameKeys[0:lp1]+advs
-    xTest=nameKeys[lp1:l1]+advKeys
+    print "l1",l1
+    print "lp1",lp1
+    print "testLengthName",testLengthName
+    xTest=nameKeys[lp1:testLengthName]+advKeys[0:testLengthAdv]
+    xTestPlus=testLengthName-lp1
+    xTestMinus=testLengthAdv
+    xTest2 = nameKeys[(testLengthName+1):l1]+advKeys[(testLengthAdv+1):]+advKeysLeaveOut
+    xTest2Plus=(l1-testLengthName-1)
+    xTest2Minus=(len(advKeys)-1 -testLengthAdv)+len(advKeysLeaveOut)
     yApp=[1 for i in xrange(lp1)]+[-1 for i in xrange(lp2)]
-    yTest=[1 for i in xrange(l1-lp1)]+[-1 for i in xrange(l2-lp2)]
-    return xApp, yApp, xTest, yTest
+    yTest=[1 for i in xrange(xTestPlus)]+[-1 for i in xrange(xTestMinus)]
+    yTest2=[1 for i in xrange(xTest2Plus)]+[-1 for i in xrange(xTest2Minus)]
+    return xApp, yApp, xTest, yTest,xTest2,yTest2
 
 def train(name,mu0,sig0,mu,pi, xApp, yApp, xTest, yTest,C=1):
     print('learning ' + name)
@@ -139,31 +156,32 @@ def evalKP(yPred, nameL, dic, seuil=0):
             j+=1
     return ok, ok/float(tot)
 
-def test_make_sets(r1, r2):
+def test_make_sets(r1, r2,leaveOut=[]):
     dic={'a':[1, 5, 7, 23, 18, 4, 2],
          'b':[8, 9, 10],
          'c':[6, 11, 12]}
-    print dic
-    print (make_sets('a', dic, r1, r2))
+    # print dic
+    res = make_sets('a', dic, r1, r2,leaveOut)
+    return dic,res
 
-# test_make_sets(0.5, 1.2)
+dic, res = test_make_sets(0.2, 1.2,['b'])
+print dic,res
 
+# nbG=4
+# name='sarkozy'
+# nbc=100
+# r1=0.6
+# r2=1.1
 
-nbG=4
-name='sarkozy'
-nbc=100
-r1=0.6
-r2=1.1
+# mfccs, mu, pi, dic = createDataFiles(nbc, nbG)
 
-mfccs, mu, pi, dic = createDataFiles(nbc, nbG)
+# xApp, yApp, xTest, yTest = make_sets(name, dic, r1, r2)
+# print xApp
 
-xApp, yApp, xTest, yTest = make_sets(name, dic, r1, r2)
-print xApp
+# print 'GMM sur l\'ensemble des points\n'
+# mu0, sig0 = gmms([mfccs[i] for i in xApp], nbG)
 
-print 'GMM sur l\'ensemble des points\n'
-mu0, sig0 = gmms([mfccs[i] for i in xApp], nbG)
-
-train(name, mu0, sig0, mu, pi, xApp, yApp, xTest, yTest)
+# train(name, mu0, sig0, mu, pi, xApp, yApp, xTest, yTest)
 # w, b = train('sarkozy', mu0, sig0, mu, pi, dicApp)
 
 # print 'evaluation...'
