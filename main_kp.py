@@ -17,10 +17,12 @@ def createDataFiles(nbc, nbG):
         print "Please add some data, I don't work for free"
     else:
         mfccs = [] #contiendra l'ensemble des mfccs
-        mu=[]
-        pi=[]
+        muApp=[]
+        piApp=[]
         dicApp={}
         numApp=0
+        muTest=[]
+        piTest=[]
         dicTest={}
         numTest=0
         for root, dirs, files in os.walk('data'):
@@ -52,8 +54,8 @@ def createDataFiles(nbc, nbG):
                         mu_j = g.means
                         pi_j = g.weights
 
-                        mu.append(mu_j)
-                        pi.append(pi_j)
+                        muApp.append(mu_j)
+                        piApp.append(pi_j)
                         dicApp[nameInDic].append(numApp)
                         numApp+=1
                     for j in xrange(min(nbv, 5), nbv):
@@ -66,11 +68,13 @@ def createDataFiles(nbc, nbG):
                         mu_j = g.means
                         pi_j = g.weights
 
-                        mu.append(mu_j)
-                        pi.append(pi_j)
+                        muTest.append(mu_j)
+                        piTest.append(pi_j)
                         dicTest[nameInDic].append(numTest)
                         numTest+=1
-        return mfccs, mu, pi, dicApp, dicTest, numApp    
+        mu=muApp+muTest
+        pi=piApp+piTest
+    return mfccs, mu, pi, dicApp, dicTest, numApp    
 
 def gmms(data, nbG):
     c0 = np.concatenate(data)
@@ -99,6 +103,7 @@ def make_training_set(name,dic,m):
     return {name : nameKeys, '#mechant' : advs}
 
 def train(name,mu0,sig0,mu,pi,dic):
+    print('learning ' + name)
     y = build_labels(name,dic)
     x=range(len(y))
     def k(i,j):
@@ -114,36 +119,43 @@ mfccs, mu, pi, dicApp, dicTest, numApp = createDataFiles(100, nbG)
 print 'GMM sur l\'ensemble des points\n'
 
 mu0, sig0 = gmms(mfccs, nbG)
-#train('thomas', mu0, sig0, mu, pi)
 
-print 'learning thomas'
 w, b = train('sarkozy', mu0, sig0, mu, pi, dicApp)
 
-def evalKP(nameL, w, b, mu, pi, mu0, sig0, dic, num, seuil=0):
-    ok = 0;
-    tot = sum(len(val) for val in dic.itervalues())
+def predKP(w, b, mu, pi, mu0, sig0, dic, num):
+    print 'prediction...'
+    yPred=[]
     T=len(w)
     for name in dic:
         for i in dic[name]:
             #calcule <w,i-eme>
             v=[w[j]*fisher.K(w, j, i+num, mu[j], mu[i], sig0, pi[j], pi[j], mu0) for j in xrange(T)]
-            tmp=sum(v) + b - seuil
+            tmp=sum(v) + b
+            yPred.appen(tmp)
             #print name, i+num, ' : ', tmp
-            if(name==nameL):
-                ok+=(tmp > 0)
-            else:
-                ok+=(tmp < 0)
-    return ok, ok/float(tot)
+    return yPred
             
+def evalKP(yPred, nameL, dic, seuil=0):
+    ok = 0;
+    tot = sum(len(val) for val in dic.itervalues())
+    for name in dic:
+        for i in dic[name]:
+            if(name==nameL):
+                ok+=(tmp-seuil > 0)
+            else:
+                ok+=(tmp-seuil < 0)
+    return ok, ok/float(tot)
 
+print 'evaluation...'
 rho = []
+yPred=predKP(w, b, mu, pi, mu0, sig0, dicTest, numApp)
 for i in xrange(3):
     seuil = 2**(2*(-3+i))
-    k, tmp = evalKP('sarkozy', w, b, mu, pi, mu0, sig0, dicTest, numApp, seuil)
+    k, tmp = evalKP(yPred, 'sarkozy', dicTest, seuil)
     rho.append(tmp)
 for i in xrange(4):
     seuil = 2**(3*i)
-    k, tmp = evalKP('sarkozy', w, b, mu, pi, mu0, sig0, dicTest, numApp, seuil)
+    k, tmp = evalKP(yPred, 'sarkozy', dicTest, seuil)
     rho.append(tmp)
 
 print rho
