@@ -3,7 +3,7 @@ from __future__ import division #division en flottants par défaut
 import numpy as np
 import matplotlib.pyplot as plt
 
-def plot(x, y, w, b):
+def plot(x, y, w, b,title=None,saveFile=None):
     x1max = np.max(x[:, 0]) + 2
     x2max = np.max(x[:, 1]) + 2
     x1min = np.min(x[:, 0]) - 2
@@ -24,8 +24,11 @@ def plot(x, y, w, b):
         l2 = [x2min, x2max]
 
     plt.plot(s11, s12, 'ro', s21, s22, 'bx', l1, l2, 'g-')
-    
+    if title:
+        plt.title(title)
     plt.axis([x1min, x1max, x2min, x2max])
+    if saveFile:
+        plt.savefig(saveFile)
     plt.show()
 
 def plotFindC(res,legend,e):
