@@ -127,7 +127,7 @@ def train(name,mu0,sig0,mu,pi, xApp, yApp, xTest, yTest,C=1):
         return res
     return qp(xApp, yApp, xTest, yTest, k, C)
 
-def predKP(w, b, mu, pi, mu0, sig0, dic, num):
+def predQP(w, b, mu, pi, mu0, sig0, dic, num):
     print 'prediction...'
     yPred=[]
     T=len(w)
@@ -140,7 +140,7 @@ def predKP(w, b, mu, pi, mu0, sig0, dic, num):
             #print name, i+num, ' : ', tmp
     return yPred
             
-def evalKP(yPred, nameL, dic, seuil=0):
+def evalQP(yPred, nameL, dic, seuil=0):
     ok = 0
     tot = sum(len(val) for val in dic.itervalues())
     j=0
@@ -186,19 +186,19 @@ def optimisation(names, nbGs, Cs, r1, r2):
     res={}
     for nbG in nbGs:
         mfccs, mu, pi, dic = createDataFiles(nbc, nbG)
+        pickle.dump(dic, open('data_qp'+str(nbG)+'.dat', 'wb'))
         for name in names:
             xApp, yApp, xOpp, yOpp, xTest, yTest = make_sets(name, dic, r1, r2)
             mu0, sig0 = gmms([mfccs[i] for i in xApp], nbG)
             for C in Cs:
                 w, b, acc = train(name, mu0, sig0, mu, pi, xApp, yApp, xOpp, yOpp, C)
                 res[(name, nbG, C)]=acc
-                print res
+                print name, nbG, C, acc
     return res
 
 res = optimisation(['gerra', 'sarkozy', 'L4', 'thomas'], [10, 30, 50, 100], [0.01, 0.08, 0.3, 1.0], 0.6, 2.0)
-print res
-pickle.dump(res, open('resultat.dat', 'wb'))
 
+pickle.dump(res, open('resultats_qp.dat', 'wb'))
 # print 'evaluation...'
 # rho = []
 # yPred=predKP(w, b, mu, pi, mu0, sig0, dicTest, numApp)

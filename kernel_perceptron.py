@@ -26,7 +26,7 @@ def ker_perceptron(oldX, y, k):
     return w
 
 
-def kp(x, y, k, stop=100000, log=False, logFile=None, step=50):
+def kp(x, y, k, stop=100000, log=False, logFile=None, step=50, verbose=False):
     n=len(x)
     w=np.zeros(n)
     b=y[0]
@@ -42,7 +42,8 @@ def kp(x, y, k, stop=100000, log=False, logFile=None, step=50):
             sFile=logFile+str(int(ind/step))+'.png'
             sTitle='Kernel perceptron at '+str(ind)+'-th iteration'
             plot.plot(x, y, np.dot(w, x), b, title=sTitle, saveFile=sFile, display=False)
-
+        if (verbose and not (ind % step)):
+            print 'itération : ', ind
         j=negatifs[0]
         w[j] = w[j] + y[j]
         b = b + y[j]
