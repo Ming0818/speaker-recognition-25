@@ -5,6 +5,7 @@ import fisher
 import random
 from sklearn import mixture
 from quad_prog import qp
+import pickle
 
 def gmm(x, nbG):
     g=mixture.GMM(n_components=nbG)
@@ -25,9 +26,9 @@ def createDataFiles(nbc, nbG):
             #print root,dirs,files
             for file in files:
                 if file.endswith(".wav"):
-                    print "treating file "+file
+                    # print "treating file "+file
                     nameInDic=os.path.split(root)[-1]
-                    print "-> "+nameInDic
+                    # print "-> "+nameInDic
                     name=os.path.splitext(file)[0]
                     fileName = os.path.join(root, name)
                     wavFile = fileName+'.wav'
@@ -105,9 +106,6 @@ def make_sets(name, dic, r1, r2,leaveOut=[]):
     testLengthAdv = l2/2 # on ne teste que sur la moitié de ce qui reste pour pouvoir faire un "blind" test sur un troisième ensemble, xTest2
     testLengthName = l1/2
     xApp=nameKeys[0:lp1]+advs
-    print "l1",l1
-    print "lp1",lp1
-    print "testLengthName",testLengthName
     xTest=nameKeys[lp1:testLengthName]+advKeys[0:testLengthAdv]
     xTestPlus=testLengthName-lp1
     xTestMinus=testLengthAdv
@@ -163,25 +161,43 @@ def test_make_sets(r1, r2,leaveOut=[]):
     res = make_sets('a', dic, r1, r2,leaveOut)
     return dic,res
 
-dic, res = test_make_sets(0.2, 1.2,['b'])
-print dic,res
+#dic, res = test_make_sets(0.2, 1.2,['b'])
+#print dic,res
 
-nbG=5
-C=0.025
-name='L4'
 nbc=100
-r1=0.6
-r2=2.0
+
+# nbG=50
+# C=0.025
+# name='gerra'
+# r1=0.6
+# r2=2.0
 
 # mfccs, mu, pi, dic = createDataFiles(nbc, nbG)
 
-# xApp, yApp, xTest, yTest = make_sets(name, dic, r1, r2)
+# xApp, yApp, xOpp, yOpp, xTest, yTest = make_sets(name, dic, r1, r2)
 
 # print 'GMM sur l\'ensemble des points\n'
 # mu0, sig0 = gmms([mfccs[i] for i in xApp], nbG)
 
-# w, b, acc = train(name, mu0, sig0, mu, pi, xApp, yApp, xTest, yTest, C)
+# w, b, acc = train(name, mu0, sig0, mu, pi, xApp, yApp, xOpp, yOpp, C)
 # print acc
+
+def optimisation(names, nbGs, Cs, r1, r2):
+    res={}
+    for nbG in nbGs:
+        mfccs, mu, pi, dic = createDataFiles(nbc, nbG)
+        for name in names:
+            xApp, yApp, xOpp, yOpp, xTest, yTest = make_sets(name, dic, r1, r2)
+            mu0, sig0 = gmms([mfccs[i] for i in xApp], nbG)
+            for C in Cs:
+                w, b, acc = train(name, mu0, sig0, mu, pi, xApp, yApp, xOpp, yOpp, C)
+                res[(name, nbG, C)]=acc
+                print res
+    return res
+
+res = optimisation(['gerra', 'sarkozy', 'L4', 'thomas'], [10, 30, 50, 100], [0.01, 0.08, 0.3, 1.0], 0.6, 2.0)
+print res
+pickle.dump(res, open('resultat.dat', 'wb'))
 
 # print 'evaluation...'
 # rho = []
