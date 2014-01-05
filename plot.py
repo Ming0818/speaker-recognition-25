@@ -67,5 +67,5 @@ def plot_res(fileName, title):
     plt.savefig('opt_qp.png')
     plt.show()
 
-plot_res('resultat.dat', 'Optimisation du nombre de gaussiennes des GMM\n pour l\'optimisation quadratique')
+# plot_res('resultat.dat', 'Optimisation du nombre de gaussiennes des GMM\n pour l\'optimisation quadratique')
         
