@@ -2,6 +2,8 @@
 from __future__ import division #division en flottants par défaut
 import numpy as np
 import matplotlib.pyplot as plt
+import pickle
+import random
 
 def plot(x, y, w, b,title=None,saveFile=None, display=True):
     x1max = np.max(x[:, 0]) + 2
@@ -41,3 +43,29 @@ def plotFindC(res,legend,e):
     plt.title(legend)
     plt.subplots_adjust(top=0.7)
     plt.savefig('bestC.png')
+
+def plot_res(fileName, title):
+    random.seed(100)
+    res=pickle.load(open(fileName, 'rb'))
+    acc={}
+    nbGs={}
+    for (name, nbG, C) in res:
+        if (not name in acc):
+            acc[name]=[]
+            nbGs[name]=[]
+        acc[name].append(res[(name, nbG, C)][0][0])
+        nbGs[name].append(nbG)
+    for name in acc:
+        l=len(nbGs[name])
+        tmp=sorted(range(l), key=lambda k:nbGs[name][k])
+        plt.plot([nbGs[name][i] for i in tmp], [acc[name][i] for i in tmp], color=(random.random(), random.random(), random.random()))
+    plt.axis([0,110,0.4,1.1])
+    plt.ylabel('accuracy')
+    plt.xlabel('number of gaussians')
+    plt.title(title)
+    plt.subplots_adjust(top=0.9)
+    plt.savefig('opt_qp.png')
+    plt.show()
+
+plot_res('resultat.dat', 'Optimisation du nombre de gaussiennes des GMM\n pour l\'optimisation quadratique')
+        
