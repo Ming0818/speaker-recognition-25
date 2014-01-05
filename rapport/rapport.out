@@ -1,0 +1,21 @@
+\BOOKMARK [1][-]{section.1}{Introduction}{}
+\BOOKMARK [1][-]{section.2}{Particularit\351s d'impl\351mentation}{}
+\BOOKMARK [1][-]{section.3}{R\351partition du travail}{}
+\BOOKMARK [2][-]{subsection.3.1}{Antoine}{section.3}
+\BOOKMARK [2][-]{subsection.3.2}{Thomas}{section.3}
+\BOOKMARK [2][-]{subsection.3.3}{Ensemble}{section.3}
+\BOOKMARK [1][-]{section.4}{Choix des donn\351es}{}
+\BOOKMARK [1][-]{section.5}{Repr\351sentation des donn\351es}{}
+\BOOKMARK [1][-]{section.6}{SVM}{}
+\BOOKMARK [2][-]{subsection.6.1}{SGD}{section.6}
+\BOOKMARK [3][-]{subsubsection.6.1.1}{Premiers Tests}{subsection.6.1}
+\BOOKMARK [1][-]{section.7}{Kernel Perceptron}{}
+\BOOKMARK [2][-]{subsection.7.1}{Premiers tests}{section.7}
+\BOOKMARK [1][-]{section.8}{Noyau Gaussien}{}
+\BOOKMARK [1][-]{section.9}{Noyau de Fisher}{}
+\BOOKMARK [2][-]{subsection.9.1}{GMM}{section.9}
+\BOOKMARK [2][-]{subsection.9.2}{Noyau de Fisher}{section.9}
+\BOOKMARK [1][-]{section.10}{Validation}{}
+\BOOKMARK [2][-]{subsection.10.1}{Validation crois\351e}{section.10}
+\BOOKMARK [1][-]{section.11}{R\351sultats}{}
+\BOOKMARK [2][-]{subsection.11.1}{Imitateur}{section.11}
