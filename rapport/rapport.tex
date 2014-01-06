@@ -119,13 +119,34 @@ Nous avons ensuite écrit une fonction qui affiche les points ainsi que la solut
 En vue de tester différents noyaux mentionnés par l'article, nous avons implémenté l'algorithme du Kernel Perceptron\footnote{\texttt{kernel\_perceptron.py}}.
 
 \subsection{Premiers tests}
-Comme pour la SGD, nous avons testé le Kernel Perceptron sur des données générées avec le noyau trivial qui correspond à rester dans l'espace ambiant avec son produit scalaire) en dimension 2:
+Comme pour la SGD, nous avons testé le Kernel Perceptron sur des données générées avec le noyau trivial qui correspond à rester dans l'espace ambiant avec son produit scalaire) en dimension 2. Les résultats sont présentés sur la figure \ref{test_kp}. Les droites ont évolué dans le sens des aiguilles d'une montre au cours des itérations. La dernière droite sépare bien les données.
 
-IMAGE GÉNÉRÉE PAR ANTOINE A INSERER ICI
+\begin{figure}[!h]
+\includegraphics[width=0.85\textwidth]{img/kp_pdf}
+\caption{Evolution de la droite testée par le kernel perceptron}\label{test_kp}
+\end{figure}
 
+\section{Optimisation quadratique}
+\label{optquad}
+Pour tester une méthode alternative au kernel perceptron, nous avons utilisé une librairie matlab qui résout les problèmes d'optimisation quadratique : monqp.m écrite par \href{http://asi.insa-rouen.fr/enseignants/~scanu/SVM/}{Stéphane Canu} du LITIS de Rouen (cf. \cite{Canu}).
+Les paramètres à ajuster de cet algorithm sont le coût attribué aux mauvaises classifications sur les données d'apprentissage et le nombre de gaussiennes lors de l'approximation de la fonction de répartition des données. Les fichiers de cette implémentation sont main\_qp.py, quad\_prog.py et qp.m.
+Le principe de l'optimisation quadratique et de résoudre le problème dans le dual. Le problème initial \ref{eq:primalSVM} devient alors:
 
-\section{Noyau Gaussien}
-\label{gaussien}
+\begin{equation}
+  \label{eq:dualSVM}
+  \left\{
+    \begin{array}{lll}
+      \displaystyle\min_{\alpha}& \frac{1}{2} \alpha^\top  G \alpha - e^\top  \alpha&\\
+      \mbox{avec} &y^\top  \alpha = 0 &\\
+      \mbox{et} &0 \leq \alpha_i \leq C,& i=1 \dots n \\
+    \end{array}
+  \right.
+\end{equation}
+
+où $G$ est la matrice de terme général $G_{ij} =  y_i y_j x_i^\top x_j$,
+
+%\section{Noyau Gaussien}
+%\label{gaussien}
 \section{Noyau de Fisher}
 \label{fisher}
 \subsection{GMM}
@@ -155,7 +176,7 @@ $x_i^t$ étant la $t$-ième frame de $x_i$, $P(m | x_i^t)$ mesurant le taux d'ap
 \section{Validation}
 \label{validation}
 \subsection{Validation croisée}
-Pour choisir la constante $C$ la plus adaptée à un ensemble d'entraînement pour la technique de la SGD (\ref{sgd}), nous avons utilisé le protocole suivant:
+Pour choisir les paramètres à ajuster dans les différents algorithmes (la constante $C$ la plus adaptée pour la technique de la SGD (\ref{sgd})), nous avons utilisé le protocole suivant :
 \begin{itemize}
 \item On choisit un sous-ensemble $S$ des locuteurs enregistrés.
 \item Pour chaque locuteur, on partage les données selon les ratios suivants:
@@ -174,7 +195,19 @@ Pour choisir la constante $C$ la plus adaptée à un ensemble d'entraînement po
 Cela donne par exemple la courbe ci-dessus, pour $k=4$ et les autres paramètres donnés sur le graphique:
 
 On obtient $75.99 \%$ de réussite sur le troisième ensemble qui contient, en plus de données des locuteurs déjà entraînés, deux \og attaquants \fg. Ici, la meilleure valeur de $C$ est $2^1 = 2$.
+
+En ce qui concerne l'optimisation quadratique avec le noyau de Fisher, nous avons lancé des tests sur plusieurs valeurs des paramètres à ajuster. Nous avons observé que le paramètre $C$ n'influençait pas les résulats donc nous montrons seulement l'influence du nombre de gaussiennes sur la figure \ref{opt_qp}. Le nombre de gaussiennes optimal est autour de 30 et nous prendrons donc cette valeur par la suite.
+
+\begin{figure}[!h]
+\includegraphics[width=0.85\textwidth]{img/opt_qp_pdf}
+\caption{Variation de la précision en fonction du nombre de gausiennes}\label{opt_qp}
+\end{figure}
+
 \section{Résultats}
 \subsection{Imitateur}
 \label{imitateur}
+
+\bibliographystyle{plain}
+\bibliography{rapport}
+
 \end{document}

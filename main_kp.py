@@ -117,7 +117,7 @@ def make_sets(name, dic, r1, r2,leaveOut=[]):
     yTest2=[1 for i in xrange(xTest2Plus)]+[-1 for i in xrange(xTest2Minus)]
     return xApp, yApp, xTest, yTest,xTest2,yTest2
 
-def train(name,mu0,sig0,mu,pi, xApp, yApp, verbose=False):
+def train(name,mu0,sig0,mu,pi, xApp, yApp, verbose=False, stop=100000):
     #print('learning ' + name)
     # y = build_labels(name,dic)
     # x=range(len(mu))
@@ -125,7 +125,7 @@ def train(name,mu0,sig0,mu,pi, xApp, yApp, verbose=False):
     def k(i,j):
         res = fisher.K(xApp,i,j,mu[i],mu[j],sig0,pi[i],pi[j],mu0)
         return res
-    return kp(xApp, yApp, k, verbose=verbose)
+    return kp(xApp, yApp, k, verbose=verbose, stop=stop)
 
 def predKP(w, b, mu, pi, mu0, sig0, xTest):
     # print 'prediction...'
@@ -158,23 +158,23 @@ def test_make_sets(r1, r2,leaveOut=[]):
 
 nbc=100
 
-nbG=50
-name='gerra'
-r1=0.6
-r2=2.0
+# nbG=50
+# name='gerra'
+# r1=0.6
+# r2=2.0
 
-mfccs, mu, pi, dic = createDataFiles(nbc, nbG)
-print name
-xApp, yApp, xOpp, yOpp, xTest, yTest = make_sets(name, dic, r1, r2)
+# mfccs, mu, pi, dic = createDataFiles(nbc, nbG)
+# print name
+# xApp, yApp, xOpp, yOpp, xTest, yTest = make_sets(name, dic, r1, r2)
 
-print 'GMM sur l\'ensemble des points\n'
-mu0, sig0 = gmms([mfccs[i] for i in xApp], nbG)
-print 'start training'
-w, b, ind = train(name, mu0, sig0, mu, pi, xApp, yApp, verbose=True)
-acc = evalKP(predKP(w, b, mu, pi, mu0, sig0, xTest), yTest)
-print ind, acc
+# print 'GMM sur l\'ensemble des points\n'
+# mu0, sig0 = gmms([mfccs[i] for i in xApp], nbG)
+# print 'start training'
+# w, b, ind = train(name, mu0, sig0, mu, pi, xApp, yApp, verbose=True)
+# acc = evalKP(predKP(w, b, mu, pi, mu0, sig0, xTest), yTest)
+# print ind, acc
 
-def optimisation(names, nbGs, r1, r2):
+def optimisation(names, nbGs, r1, r2, stop=100000):
     res={}
     for nbG in nbGs:
         mfccs, mu, pi, dic = createDataFiles(nbc, nbG)
@@ -182,13 +182,13 @@ def optimisation(names, nbGs, r1, r2):
         for name in names:
             xApp, yApp, xOpp, yOpp, xTest, yTest = make_sets(name, dic, r1, r2)
             mu0, sig0 = gmms([mfccs[i] for i in xApp], nbG)
-            w, b, _ = train(name, mu0, sig0, mu, pi, xApp, yApp)
+            w, b, it = train(name, mu0, sig0, mu, pi, xApp, yApp, stop=stop)
             acc = evalKP(predKP(w, b, mu, pi, mu0, sig0, xTest), yTest)
             res[(name, nbG)]=acc
-            print name, nbG, acc
+            print name, nbG, acc, it
     return res
 
-# res = optimisation(['gerra', 'sarkozy', 'L4', 'thomas'], [10, 30, 50, 100], [0.01, 0.08, 0.3, 1.0], 0.6, 2.0)
+res = optimisation(['gerra', 'sarkozy', 'L4', 'thomas'], [10, 30, 40, 50, 70, 100], 0.6, 2.0, stop=300)
 
-# pickle.dump(res, open('resultats_kp.dat', 'wb'))
+pickle.dump(res, open('resultats_kp.dat', 'wb'))
 
