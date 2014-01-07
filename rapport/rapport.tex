@@ -35,7 +35,7 @@ Nous avons essayé de retrouver les résultats du papier "Kernel Based Text-Inde
 
 Nous avons commencé par coder un svm(\ref{svm}).
 
-Puis nous avons codé le kernel perceptron pour pouvoir tester plusieurs noyaux, l'objectif étant d'arriver au noyau de Fisher(\ref{fisher}). Nous avons aussi utiliser un algorithme d'optimisation quadratique de Matlab pour comparer les résultats avec notre implémentation du kernel perceptron.
+Puis nous avons codé le kernel perceptron pour pouvoir tester plusieurs noyaux, l'objectif étant d'arriver au noyau de Fisher(\ref{fisher}). Nous avons aussi utilisé un algorithme d'optimisation quadratique de Matlab pour comparer les résultats avec notre implémentation du kernel perceptron.
 
 Nous avons enfin fait diverses validations (\ref{validation}) sur des données générées (\ref{donnees}) par nous-mêmes.
 
@@ -136,7 +136,7 @@ Une difficulté qui se présente est le comportement de l'algorithme lorsque les
 \label{optquad}
 Pour tester une méthode alternative au kernel perceptron, nous avons utilisé une librairie matlab qui résout les problèmes d'optimisation quadratique : monqp.m écrite par \href{http://asi.insa-rouen.fr/enseignants/~scanu/SVM/}{Stéphane Canu} du LITIS de Rouen (cf. \cite{Canu}).
 Les paramètres à ajuster de cet algorithm sont le coût attribué aux mauvaises classifications sur les données d'apprentissage et le nombre de gaussiennes lors de l'approximation de la fonction de répartition des données. Les fichiers de cette implémentation sont main\_qp.py, quad\_prog.py et qp.m.
-Le principe de l'optimisation quadratique et de résoudre le problème dans le dual. Le problème initial \ref{eq:primalSVM} devient alors:
+Le principe de l'optimisation quadratique est de résoudre le problème dans le dual. Le problème initial \ref{eq:primalSVM} devient alors:
 
 \begin{equation}
   \label{eq:dualSVM}
