@@ -108,7 +108,7 @@ Thomas Sibut-Pinote}
 contenu...
 \end{frame}
 
-\begin{frame}{Stochastic gradient descent: optimization}
+\begin{frame}{Stochastic gradient descent}
   $f_{obj}(w) := \frac{1}{2} \|w\|^2 + C\displaystyle\sum\limits_{i=1}^{n}l_i(w)$ with $l_i(w) := \mathrm{hinge}(y_i (w \cdot x_i + b))$
 \begin{figure}[!h]
 \includegraphics[width=0.5\textwidth]{../bestC}
@@ -136,18 +136,27 @@ We first used the Fisher kernel with the kernel perceptron algorithm.
 contenu...
 \end{frame}
 
-\begin{frame}{Quadratic optimization: optimization}
-We then used a quadratic optimization with matlab to implement a new classifier.
+\begin{frame}{Quadratic programming}
+We then used a quadratic optimization algorithm with matlab to implement a new classifier.
+\begin{block}{Dual problem}
+\begin{equation}
+  \left\{
+    \begin{array}{lll}
+      \displaystyle\min_{\alpha}& \frac{1}{2} \alpha^\top  G \alpha - e^\top  \alpha&\\
+      \mbox{avec} &y^\top  \alpha = 0 &\\
+      \mbox{et} &0 \leq \alpha_i \leq C,& i=1 \dots n \\
+    \end{array}
+  \right.
+\end{equation}
+\end{block}
+\end{frame}
 
+\begin{frame}{Quadratic optimization: optimization}
+The parameter 
 \begin{figure}[!h]
 \includegraphics[width=0.5\textwidth]{../rapport/img/opt_qp_pdf}
 \caption{Variation de la précision en fonction du nombre de gausiennes}\label{opt_qp}
 \end{figure}
-
-\end{frame}
-
-\begin{frame}{Quadratic optimization: evaluation}
-contenu...
 \end{frame}
 
 \begin{frame}{Final exams}
