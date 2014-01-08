@@ -1,19 +1,18 @@
-\documentclass[10pt,a4paper]{beamer}
+\documentclass[10pt]{beamer}
 \usepackage[latin1]{inputenc}
 \usepackage{amsmath}
 \usepackage{amsfonts}
 \usepackage{amssymb}
 \usepackage{makeidx}
 \usepackage{graphicx}
-\usetheme{Antibes}
-\logo{\includegraphics[height=5mm]{logo.png}}
+\usetheme{Madrid}
 \usepackage{tikz}
 %%%<
-\usepackage{verbatim}
-\usepackage[active,tightpage]{preview}
-\PreviewEnvironment{center}
-\setlength\PreviewBorder{10pt}%
-%%%>
+%\usepackage{verbatim}
+%\usepackage[active,tightpage]{preview}
+%\PreviewEnvironment{center}
+%\setlength\PreviewBorder{10pt}%
+%%%%>
 \usetikzlibrary{arrows}
 
 % Defines a `datastore' shape for use in DFDs.  This inherits from a
@@ -43,10 +42,13 @@
  }
 }
 \makeatother
+
+
 \title[Speaker recognition]{Machine Learning M2 project}
 \author{Antoine Plet\\
 Thomas Sibut-Pinote}
 \institute{ENS de Lyon}
+\logo{\includegraphics[height=5mm]{logo.png}}
 
 \begin{document}
 \begin{frame}
@@ -57,7 +59,8 @@ Thomas Sibut-Pinote}
 \begin{frame}
 
 
-\begin{center}
+\begin{figure}[scale=0.1]
+\centering
 \begin{tikzpicture}[
   font=\sffamily,
   every matrix/.style={ampersand replacement=\&,column sep=2cm,row sep=2cm},
@@ -94,7 +97,6 @@ Thomas Sibut-Pinote}
   \draw[to] (monitor) -- node[midway,above] {events}
       node[midway,below] {level 1} (datastore);
 \end{tikzpicture}
-\end{center}
-
+\end{figure}
 \end{frame}
 \end{document}
