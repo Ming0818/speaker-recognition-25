@@ -91,7 +91,7 @@ Thomas Sibut-Pinote}
      node[midway,below] {(Voicebox)} (daq);
   \draw[to] (daq) -- node[midway,right] {Feature Space} (buffer);
   \draw[to] (buffer) --
-      node[midway,right] {Kernel Perceptron, Quadratic Programming} (monitor);
+      node[midway,right] {Kernel Perceptron\\Quadratic Programming} (monitor);
 %  \draw[to] (monitor) to[bend right=50] node[midway,above] {events}
 %      node[midway,below] {level 1} (storage);
   \draw[to] (storage) to node[midway,above] {tries to}
@@ -105,7 +105,17 @@ Thomas Sibut-Pinote}
 \end{frame}
 
 \begin{frame}{Data and preprocessing}
-contenu...
+\begin{block}{Starting point}
+\begin{itemize}
+\item We recorded ourselves and a few other people..
+\item ..and we took a recording of a famous politician and someone trying to imitate him. %commentaire oral: after all, that's what we want to fight!!
+\item They were all in .WAV format
+\end{itemize}
+\end{block}
+
+\begin{block}{Pre-processing}
+We computed MFCC coefficients from those files: Discrete Cosine Transform + some other functions which have proven to work well in the past.
+\end{block}
 \end{frame}
 
 \begin{frame}{Stochastic gradient descent: optimization}
