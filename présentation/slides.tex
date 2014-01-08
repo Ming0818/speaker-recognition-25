@@ -130,7 +130,14 @@ contenu...
 \end{frame}
 
 \begin{frame}{Fisher kernel}
-contenu...
+\begin{block}{The Fisher Kernel}
+The Fisher Kernel is based on a generative model, in our case a Gaussian Mixture model.\\
+The vectors considered are packets of frames. If $x$ is a vector, the Fisher score is
+\[u_{\bar{x}} = \nabla_{\theta} \log p (\bar{x} | \theta) \]
+and the Fisher Kernel is then computed by
+\[K(\bar{x}_i,\bar{x}_j) = u_{\bar{x}_i}^{T} I(\theta)^{-1} u_{\bar{x}_j}\]
+where $I(\theta)$ is approximated well enough by the identity matrix in our case.
+\end{block}
 \end{frame}
 
 \begin{frame}{Kernel perceptron: optimization}
@@ -147,7 +154,7 @@ contenu...
 \end{frame}
 
 \begin{frame}{Quadratic programming}
-We then used a quadratic optimization algorithm with matlab to implement a new classifier.
+We then used a quadratic optimization algorithm with Matlab to implement a new classifier.
 \begin{block}{Dual problem}
 \begin{equation}
   \left\{
@@ -162,10 +169,10 @@ We then used a quadratic optimization algorithm with matlab to implement a new c
 \end{frame}
 
 \begin{frame}{Quadratic optimization: optimization}
-The parameter 
+We wanted to optimize the number of Gaussians in the generative model.
 \begin{figure}[!h]
 \includegraphics[width=0.5\textwidth]{../rapport/img/opt_qp_pdf}
-\caption{Variation de la précision en fonction du nombre de gausiennes}\label{opt_qp}
+\caption{Variation de la précision en fonction du nombre de gaussiennes}\label{opt_qp}
 \end{figure}
 \end{frame}
 
@@ -175,8 +182,9 @@ The parameter
 
 \begin{frame}{Conclusion}
   \begin{itemize}
-    \item We implemented various classifiers based on SVM and compared them with one another
-    \item
+    \item We implemented various classifiers based on SVM and compared them with one another;
+    \item We implemented the SGD method;
+    \item We can successfully classify the speaker in most cases, even when he/she is imitating someone. (LET'S PUT SOME NUMBERS HERE FOR GOD'S SAKE)
   \end{itemize}
 \end{frame}
 
