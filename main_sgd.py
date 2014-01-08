@@ -4,7 +4,7 @@ import os,numpy as np,octaveIO as oio,string,subprocess
 import sgd
 import random
 import plot
-
+import pickle
 
 
 
@@ -78,8 +78,8 @@ def createDataFiles(r1,r2,leaveOut,rewrite=True): # r1, r2 and r3 := 1 - r1 - r2
         for root, dirs, files in os.walk('data'):
             for file in files:
                 if file.endswith(".wav"):
-                    print "treating file "+file
-                    print root
+                    #print "treating file "+file
+                    #print root
                     nameInDic=os.path.split(root)[-1]
                     name=os.path.splitext(file)[0]
                     fileName = os.path.join(root, name)
@@ -167,34 +167,102 @@ def makeLegend(leaveOut,r1,r2,iterations,rho,Cfinal):
     res = res + 'Best value of C: '+str(Cfinal)
     return res
 
-leaveOut = ['antoine','thomas']
-r1 = 0.1
-r2 = 0.2
-iterations=100
+# leaveOut = ['antoine','thomas']
+# r1 = 0.1
+# r2 = 0.2
+# iterations=100
 
-print 'create data files...'
-xApp, dicApp, xTest, dicTest, xTest2, dicTest2  = createDataFiles(r1,r2,leaveOut,False)
+# print 'create data files...'
+# xApp, dicApp, xTest, dicTest, xTest2, dicTest2  = createDataFiles(r1,r2,leaveOut)
+# # print 'launch sgd...'
+# # w2 = trainSgd('sarkozy', dicApp, xApp,10)
+# # print 'evaluation...'
+# # # print dicTest2, len(xTest2)
+# # k, rho = evalSgd('sarkozy', w2[:-1], w2[-1], dicTest, xTest)
+
+# # print k, rho
+
+# res,C,e = findC('sarkozy',dicApp,xApp,dicTest,xTest,9,-3,iterations)
+# print res,C,e
+
+
 # print 'launch sgd...'
-# w2 = trainSgd('sarkozy', dicApp, xApp,10)
-# print 'evaluation...'
-# # print dicTest2, len(xTest2)
-# k, rho = evalSgd('sarkozy', w2[:-1], w2[-1], dicTest, xTest)
+# w2 = trainSgd('sarkozy', dicApp, xApp,C)
+# k, rho = evalSgd('sarkozy', w2[:-1], w2[-1], dicTest2, xTest2)
 
 # print k, rho
 
-res,C,e = findC('sarkozy',dicApp,xApp,dicTest,xTest,9,-3,iterations)
-print res,C,e
+# # res = np.array([[  0.0625,       0.125,        0.25,         0.5,          1.,           2.,
+# #     4.,           8.,          16.        ],
+# #  [  0.75449775,   0.82083958,   0.82083958,   0.78748126,   0.75412294,
+# #     0.74437781,   0.74512744,   0.74625187,   0.74625187]])
 
+# plot.plotFindC(res,makeLegend(leaveOut,r1,r2,iterations,rho,C),e)
 
-print 'launch sgd...'
-w2 = trainSgd('sarkozy', dicApp, xApp,C)
-k, rho = evalSgd('sarkozy', w2[:-1], w2[-1], dicTest2, xTest2)
+# Evaluation sur la personnalité politique et l'imitateur.
 
-print k, rho
+leaveOut=['antoine', 'thomas', 'L1', 'L2', 'L3', 'L4', 'L5', 'meriem']
+r1=0.2
+r2=0.8
+iterations=100
+C=2.0
 
-# res = np.array([[  0.0625,       0.125,        0.25,         0.5,          1.,           2.,
-#     4.,           8.,          16.        ],
-#  [  0.75449775,   0.82083958,   0.82083958,   0.78748126,   0.75412294,
-#     0.74437781,   0.74512744,   0.74625187,   0.74625187]])
+xApp, dicApp, xTest, dicTest, xTest2, dicTest2  = createDataFiles(r1,r2,leaveOut)
+w = trainSgd('sarkozy', dicApp, xApp, C, iterations=iterations)
+# # k, rho = evalSgd('sarkozy', w[:-1], w[-1], dicTest, xTest)
+# # print k, rho
 
-plot.plotFindC(res,makeLegend(leaveOut,r1,r2,iterations,rho,C),e)
+# sigSum=0
+# sumSig=0
+# nameTest='sarkozy'
+# T=float(len(dicTest[nameTest]))
+# # print dicTest
+# # print T
+# j=0
+# for i in dicTest[nameTest]:
+#     tmp = np.dot(w[:-1], xTest[i]) + w[-1]
+#     sigSum += tmp
+#     sumSig += int(tmp > 0) - int(tmp < 0)
+# #    print i, tmp, sumSig/float(j+1), sigSum/float(j+1)
+#     j+=1
+
+# print 'sumSig : ', sumSig/T
+# print 'sigSum : ', sigSum/T
+
+C=2.0
+iterations=100
+
+dicNames1 = ['sarkozy', 'gerra', 'thomas', 'antoine', 'meriem', 'L1', 'L2', 'L3', 'L4', 'L5']
+dicNames = ['sarkozy', 'gerra']
+dicRes={}
+for r1 in [0.01, 0.2]: 
+#for r1 in [0.01, 0.02, 0.05, 0.1, 0.2, 0.5]:
+    r2 = 1 - r1
+    for name1 in dicNames:
+        for name2 in [name for name in dicNames if name <> name1]:
+            leaveOut=[name for name in dicNames1 if name <> name1 and name <> name2]
+            xApp, dicApp, xTest, dicTest, xTest2, dicTest2  = createDataFiles(r1,r2,leaveOut)
+            nbFrames = len(dicApp[name1])
+            w = trainSgd(name1, dicApp, xApp, C, iterations=iterations)
+            sigSum=0
+            sumSig=0
+            T=float(len(dicTest[name1]))
+            j=0
+            for i in dicTest[name1]:
+                tmp = np.dot(w[:-1], xTest[i]) + w[-1]
+                sigSum += tmp
+                sumSig += int(tmp > 0) - int(tmp < 0)
+                j+=1
+            dicRes[(name1, name1, r1)] = (sigSum/T, sumSig/T, nbFrames)
+            sigSum=0
+            sumSig=0
+            T=float(len(dicTest[name2]))
+            j=0
+            for i in dicTest[name2]:
+                tmp = np.dot(w[:-1], xTest[i]) + w[-1]
+                sigSum += tmp
+                sumSig += int(tmp > 0) - int(tmp < 0)
+                j+=1
+            dicRes[(name1, name2, r1)] = (sigSum/T, sumSig/T, nbFrames)
+                
+pickle.dump(dicRes, open('statPairsSGD.dat', 'wb'))
