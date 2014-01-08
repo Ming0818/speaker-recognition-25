@@ -57,45 +57,48 @@ Thomas Sibut-Pinote}
 
 
 \begin{frame}
-
-
 \begin{figure}[scale=0.1]
 \centering
+\label{schema}
+\caption{Summary}
 \begin{tikzpicture}[
   font=\sffamily,
-  every matrix/.style={ampersand replacement=\&,column sep=2cm,row sep=2cm},
-  source/.style={draw,thick,rounded corners,fill=yellow!20,inner sep=.3cm},
+  every matrix/.style={ampersand replacement=\&,column sep=2cm,row sep=1cm},
+  source/.style={draw,thick,rounded corners,fill=yellow!20,inner sep=.03cm},
   process/.style={draw,thick,circle,fill=blue!20},
   sink/.style={source,fill=green!20},
-  datastore/.style={draw,very thick,shape=datastore,inner sep=.3cm},
+  datastore/.style={draw,very thick,shape=datastore,inner sep=.07cm},
   dots/.style={gray,scale=2},
   to/.style={->,>=stealth',shorten >=1pt,semithick,font=\sffamily\footnotesize},
   every node/.style={align=center}]
 
   % Position the nodes using a matrix layout
   \matrix{
-    \node[source] (hisparcbox) {electronics};
-      \& \node[process] (daq) {DAQ}; \& \\
+    \node[source] (hisparcbox) {Raw data: .WAV file,\\ speech sample};
+      \& \node[source] (daq) {MFCC \\coefficients}; \& \\
 
-    \& \node[datastore] (buffer) {buffer}; \& \\
+    \& \node[source] (buffer) {$\phi: \mathcal{E} \mapsto \mathcal{C}$\\ Fisher Kernel K}; \& \\
 
-    \node[datastore] (storage) {storage};
-      \& \node[process] (monitor) {monitor};
-      \& \node[sink] (datastore) {datastore}; \\
+    \node[source] (storage) {external person};
+      \& \node[source] (monitor) {$w$: classifier 
+      \\ splits data with\\ an hyperplane};
+      \& \node[source] (datastore) {accepts\\/\\denies}; \\
   };
 
   % Draw the arrows between the nodes and label them.
-  \draw[to] (hisparcbox) -- node[midway,above] {raw events}
-      node[midway,below] {level 0} (daq);
-  \draw[to] (daq) -- node[midway,right] {raw event data\\level 1} (buffer);
+  \draw[to] (hisparcbox) -- node[midway,above] {pre-processing}
+     node[midway,below] {(Voicebox)} (daq);
+  \draw[to] (daq) -- node[midway,right] {Feature Space} (buffer);
   \draw[to] (buffer) --
-      node[midway,right] {raw event data\\level 1} (monitor);
-  \draw[to] (monitor) to[bend right=50] node[midway,above] {events}
-      node[midway,below] {level 1} (storage);
-  \draw[to] (storage) to[bend right=50] node[midway,above] {events}
-      node[midway,below] {level 1} (monitor);
-  \draw[to] (monitor) -- node[midway,above] {events}
-      node[midway,below] {level 1} (datastore);
+      node[midway,right] {Kernel Perceptron, Quadratic Programming} (monitor);
+%  \draw[to] (monitor) to[bend right=50] node[midway,above] {events}
+%      node[midway,below] {level 1} (storage);
+  \draw[to] (storage) to node[midway,above] {tries to}
+      node[midway,below] {authenticate} (monitor);
+  \draw[to] (monitor) -- node[midway,above] {classifies}
+       (datastore);
+  \draw[to] (daq) to[bend right=60] node[midway,left] {SGD}
+             (monitor);
 \end{tikzpicture}
 \end{figure}
 \end{frame}
