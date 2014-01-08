@@ -106,7 +106,10 @@ contenu...
 \end{frame}
 
 \begin{frame}{Stochastic gradient descent: optimization}
-contenu...
+  $f_{obj}(w) := \frac{1}{2} \|w\|^2 + C\displaystyle\sum\limits_{i=1}^{n}l_i(w)$ with $l_i(w) := \mathrm{hinge}(y_i (w \cdot x_i + b))$
+\begin{figure}[!h]
+\includegraphics[width=0.5\textwidth]{../bestC}
+\end{figure}
 \end{frame}
 
 \begin{frame}{Stochastic gradient descent: evaluation}
@@ -118,7 +121,12 @@ contenu...
 \end{frame}
 
 \begin{frame}{Kernel perceptron: optimization}
-contenu...
+We first used the Fisher kernel with the kernel perceptron algorithm.
+%\begin{figure}[!h]
+%\includegraphics[width=0.85\textwidth]{}
+%\caption{Variation de la précision en fonction du nombre de gausiennes}\label{opt_kp}
+%\end{figure}
+
 \end{frame}
 
 \begin{frame}{Kernel perceptron: evaluation}
@@ -126,7 +134,13 @@ contenu...
 \end{frame}
 
 \begin{frame}{Quadratic optimization: optimization}
-contenu...
+We then used a quadratic optimization with matlab to implement a new classifier.
+
+\begin{figure}[!h]
+\includegraphics[width=0.5\textwidth]{../rapport/img/opt_qp_pdf}
+\caption{Variation de la précision en fonction du nombre de gausiennes}\label{opt_qp}
+\end{figure}
+
 \end{frame}
 
 \begin{frame}{Quadratic optimization: evaluation}
