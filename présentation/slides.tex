@@ -5,7 +5,7 @@
 \usepackage{amssymb}
 \usepackage{makeidx}
 \usepackage{graphicx}
-\usetheme{Antibes}
+\usetheme{Madrid}
 \usepackage{tikz}
 %%%<
 %\usepackage{verbatim}
@@ -119,14 +119,16 @@ We computed MFCC coefficients from those files: Discrete Cosine Transform + some
 \end{frame}
 
 \begin{frame}{Stochastic gradient descent}
+\begin{block}{Parmeter of SGD}
   $f_{obj}(w) := \frac{1}{2} \|w\|^2 + C\displaystyle\sum\limits_{i=1}^{n}l_i(w)$ with $l_i(w) := \mathrm{hinge}(y_i (w \cdot x_i + b))$
+\end{block}
+
+\end{frame}
+
+\begin{frame}{Stochastic gradient descent: validation}
 \begin{figure}[!h]
 \includegraphics[width=0.5\textwidth]{../bestC}
 \end{figure}
-\end{frame}
-
-\begin{frame}{Stochastic gradient descent: evaluation}
-contenu...
 \end{frame}
 
 \begin{frame}{Fisher kernel}
@@ -140,21 +142,21 @@ where $I(\theta)$ is approximated well enough by the identity matrix in our case
 \end{block}
 \end{frame}
 
-\begin{frame}{Kernel perceptron: optimization}
-We first used the Fisher kernel with the kernel perceptron algorithm.
-%\begin{figure}[!h]
-%\includegraphics[width=0.85\textwidth]{}
-%\caption{Variation de la précision en fonction du nombre de gausiennes}\label{opt_kp}
-%\end{figure}
+\begin{frame}{Kernel perceptron}
+We first used the Fisher kernel with the kernel perceptron algorithm.\\
 
+\begin{figure}[!h]
+\includegraphics[width=0.85\textwidth]{../rapport/img/kp_pdf}
+\caption{Kernel perceptron unrolled (without kernel)}\label{/test_kp}
+\end{figure}
 \end{frame}
 
-\begin{frame}{Kernel perceptron: evaluation}
+\begin{frame}{Kernel perceptron: validation}
 contenu...
 \end{frame}
 
 \begin{frame}{Quadratic programming}
-We then used a quadratic optimization algorithm with Matlab to implement a new classifier.
+We then used quadratic programming with Matlab to implement a new classifier.
 \begin{block}{Dual problem}
 \begin{equation}
   \left\{
@@ -168,7 +170,7 @@ We then used a quadratic optimization algorithm with Matlab to implement a new c
 \end{block}
 \end{frame}
 
-\begin{frame}{Quadratic optimization: optimization}
+\begin{frame}{Quadratic programming: validation}
 We wanted to optimize the number of Gaussians in the generative model.
 \begin{figure}[!h]
 \includegraphics[width=0.5\textwidth]{../rapport/img/opt_qp_pdf}
@@ -176,8 +178,11 @@ We wanted to optimize the number of Gaussians in the generative model.
 \end{figure}
 \end{frame}
 
-\begin{frame}{Final exams}
-
+\begin{frame}{Final tests}
+Finally, we evaluate those methods on a famous personality and an imitator. The aim is to learn the personality without the imitator in the data and then test both the personality and the imitator
+\begin{itemize}
+  \item With the SGD method, we got 1 false positive out of 13 tests and 1 false negative out of 14 tests: good
+\end{itemize}
 \end{frame}
 
 \begin{frame}{Conclusion}
