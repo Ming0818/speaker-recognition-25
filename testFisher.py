@@ -35,14 +35,14 @@ def buildData(nC=2, nS=100, nF=1000, N=10, m=[-50.0, 0.0], M=[0.0, 50.0], nbG=30
                 pT+=tmp
                 muV[i][g]=[m[c]+random.random()*(M[c]-m[c]) for k in xrange(N)]
             piV[i]=[pig/pT for pig in piV[i]]
-
+            piV[i][-1] = (1 - sum(piV[i][:-1]))
             k=0.0
             g=0
             for p in piV[i]:
                 ind=xrange(int(k*nF), int((k+p)*nF))
-                tmp=[[random.gauss(muV[i][g][k], 1.0) for k in xrange(N)] for j in ind]
+                tmp=[[random.gauss(muV[i][g][u], 1.0) for u in xrange(N)] for j in ind]
                 signal+=tmp
-                k+=len(ind)
+                k+=p
                 g+=1
             
             mfccs+=signal
@@ -89,11 +89,15 @@ def testQP(nbGs, nC=2, nS=100, nF=1000, N=10, m=[-50.0, 0.0], M=[0.0, 50.0], det
         dicTv=np.concatenate(dicT.values())
         xT=[j for (k,_,_) in dicTv]
         yT=[y[j] for (j,_,_) in dicTv]
+        mfccChosen = np.concatenate([range(u,v) for (_,u,v) in dicLv])
         if (verbose >= 1):
             print 'xL:', np.shape(xL)
             print 'dicLv:', np.shape(dicLv)
             print 'mfccs:', np.shape(mfccs)
-            print np.concatenate([range(u,v) for (_,u,v) in dicLv])
+            print mfccChosen
+        for j in mfccChosen:
+            if j not in xrange(len(mfccs)):
+                print "voilà le méchant: ",j
         g = pp.gmm([mfccs[j] for j in np.concatenate([range(u,v) for (_,u,v) in dicLv])], nbG)
         mu0=g.means
         sig0=g.covars
@@ -105,12 +109,12 @@ def testQP(nbGs, nC=2, nS=100, nF=1000, N=10, m=[-50.0, 0.0], M=[0.0, 50.0], det
         if (verbose >= 1):
             print 'Learning...'
             print 'Evaluating...'
-        w, b, ev = qp.qp(xL, yL, xV, yV, k, 1.0)
-        ev=ev[0][0]
-        evalG.append(ev)
-        if (ev > evbG):
-            evbG=ev
-            bG=nbG
+        # w, b, ev = qp.qp(xL, yL, xV, yV, k, 1.0)
+        # ev=ev[0][0]
+        # evalG.append(ev)
+        # if (ev > evbG):
+        #     evbG=ev
+        #     bG=nbG
 
     if (verbose >= 1):
         print 'Building classifier with '+str(bG)+' gaussians...'
@@ -129,8 +133,8 @@ def testQP(nbGs, nC=2, nS=100, nF=1000, N=10, m=[-50.0, 0.0], M=[0.0, 50.0], det
     if (verbose >= 1):
         print 'Learning...'
         print 'Evaluating...'
-    w2, b2, ev2 = qp.qp(xL2, yL2, xT, yT, k2, 1.0)
-    ev2=ev2[0][0]
-    if (verbose >= 2):
-        print mu, pi, mu02, sig02
-    print bG, evbG,ev2, evalG
+    # w2, b2, ev2 = qp.qp(xL2, yL2, xT, yT, k2, 1.0)
+    # ev2=ev2[0][0]
+    # if (verbose >= 2):
+    #     print mu, pi, mu02, sig02
+    # print bG, evbG,ev2, evalG
