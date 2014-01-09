@@ -70,7 +70,7 @@ Thomas Sibut-Pinote}
 \end{frame}
 
 
-\begin{frame}
+\begin{frame}{General scheme of SVM classification}
 \begin{figure}[scale=0.1]
 \centering
 \label{schema}
@@ -132,58 +132,21 @@ We computed MFCC coefficients from those files: Discrete Cosine Transform + some
 \end{frame}
 
 \begin{frame}{Stochastic gradient descent}
-\begin{block}{Parmeter of SGD}
+\begin{block}{Parameter of SGD}
   $f_{obj}(w) := \frac{1}{2} \|w\|^2 + C\displaystyle\sum\limits_{i=1}^{n}l_i(w)$ with $l_i(w) := \mathrm{hinge}(y_i (w \cdot x_i + b))$
 \end{block}
 
-\end{frame}
-
-\begin{frame}{Stochastic gradient descent: validation}
-\begin{figure}[!h]
-\includegraphics[width=0.5\textwidth]{../bestC}
-\end{figure}
-\end{frame}
-
-\begin{frame}{Fisher kernel}
-\begin{block}{The Fisher Kernel}
-The Fisher Kernel is based on a generative model, in our case a Gaussian Mixture model.\\
-The vectors considered are packets of frames. If $x$ is a vector, the Fisher score is
-\[u_{\bar{x}} = \nabla_{\theta} \log p (\bar{x} | \theta) \]
-and the Fisher Kernel is then computed by
-\[K(\bar{x}_i,\bar{x}_j) = u_{\bar{x}_i}^{T} I(\theta)^{-1} u_{\bar{x}_j}\]
-where $I(\theta)$ is approximated well enough by the identity matrix in our case.
+\begin{block}{What we got}
+Our final program:
+\begin{itemize}
+  \item Input: data set, name, bunch of C values
+  \item Output: a function: .wav $\rightarrow \{0, 1\}$ 
+\end{itemize}
 \end{block}
 \end{frame}
 
-\begin{frame}{Kernel perceptron}
-We first used the Fisher kernel with the kernel perceptron algorithm.\\
 
-\begin{figure}[!h]
-\includegraphics[width=0.85\textwidth]{../rapport/img/kp_pdf}
-\caption{Kernel perceptron unrolled (without kernel)}\label{/test_kp}
-\end{figure}
-\end{frame}
-
-\begin{frame}{Kernel perceptron: validation}
-Some convergence problems are preventing us from this step for now. The algorithm needs too many iterations to stop and get stopped by the bound on the number of iterations giving bad results when it occurs. The optimization with such an issue is not reliable.
-\end{frame}
-
-\begin{frame}{Quadratic programming}
-We then used quadratic programming with Matlab to implement a new classifier.
-\begin{block}{Dual problem}
-\begin{equation}
-  \left\{
-    \begin{array}{lll}
-      \displaystyle\min_{\alpha}& \frac{1}{2} \alpha^\top  G \alpha - e^\top  \alpha&\\
-      \mbox{avec} &y^\top  \alpha = 0 &\\
-      \mbox{et} &0 \leq \alpha_i \leq C,& i=1 \dots n \\
-    \end{array}
-  \right.
-\end{equation}
-\end{block}
-\end{frame}
-
-\begin{frame}
+\begin{frame}{General scheme of SVM construction}
 \begin{figure}
 \begin{tikzpicture}[->,>=stealth']
 
@@ -256,6 +219,51 @@ We then used quadratic programming with Matlab to implement a new classifier.
 \end{figure}
 \end{frame}
 
+\begin{frame}{Stochastic gradient descent: validation}
+\begin{figure}[!h]
+\includegraphics[width=0.7\textwidth]{../bestC}
+\end{figure}
+\end{frame}
+
+\begin{frame}{Fisher kernel}
+\begin{block}{The Fisher Kernel}
+The Fisher Kernel is based on a generative model, in our case a Gaussian Mixture model.\\
+The vectors considered are packets of frames. If $x$ is a vector, the Fisher score is
+\[u_{\bar{x}} = \nabla_{\theta} \log p (\bar{x} | \theta) \]
+and the Fisher Kernel is then computed by
+\[K(\bar{x}_i,\bar{x}_j) = u_{\bar{x}_i}^{T} I(\theta)^{-1} u_{\bar{x}_j}\]
+where $I(\theta)$ is approximated well enough by the identity matrix in our case.
+\end{block}
+\end{frame}
+
+\begin{frame}{Kernel perceptron}
+We first used the Fisher kernel with the kernel perceptron algorithm.\\
+
+\begin{figure}[!h]
+\includegraphics[width=0.65\textwidth]{../rapport/img/kp_pdf}
+\caption{Kernel perceptron unrolled (without kernel)}\label{/test_kp}
+\end{figure}
+\end{frame}
+
+\begin{frame}{Kernel perceptron: validation}
+Some convergence problems are preventing us from this step for now. The algorithm needs too many iterations to stop and get stopped by the bound on the number of iterations giving bad results when it occurs. The optimization with such an issue is not reliable.
+\end{frame}
+
+\begin{frame}{Quadratic programming}
+We then used quadratic programming with Matlab to implement a new classifier.
+\begin{block}{Dual problem}
+\begin{equation}
+  \left\{
+    \begin{array}{lll}
+      \displaystyle\min_{\alpha}& \frac{1}{2} \alpha^\top  G \alpha - e^\top  \alpha&\\
+      \mbox{avec} &y^\top  \alpha = 0 &\\
+      \mbox{et} &0 \leq \alpha_i \leq C,& i=1 \dots n \\
+    \end{array}
+  \right.
+\end{equation}
+\end{block}
+\end{frame}
+
 \begin{frame}{Quadratic programming: validation}
 We wanted to optimize the number of Gaussians in the generative model.
 \begin{figure}[!h]
@@ -275,7 +283,8 @@ Finally, we evaluate those methods on a famous personality and an imitator. The 
   \begin{itemize}
     \item We implemented various classifiers based on SVM and compared them with one another;
     \item We implemented the SGD method;
-    \item We can successfully classify the speaker in most cases, even when he/she is imitating someone. (LET'S PUT SOME NUMBERS HERE FOR GOD'S SAKE)
+    \item We can successfully classify the speaker in most cases, even when he/she is imitating someone;
+    \item In the future we may want to average the results over more experiments.
   \end{itemize}
 \end{frame}
 
