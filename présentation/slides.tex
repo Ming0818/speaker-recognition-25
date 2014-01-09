@@ -14,6 +14,9 @@
 %\setlength\PreviewBorder{10pt}%
 %%%%>
 \usetikzlibrary{arrows}
+\usetikzlibrary{automata}
+\usetikzlibrary{positioning}
+
 
 % Defines a `datastore' shape for use in DFDs.  This inherits from a
 % rectangle and only draws two horizontal lines.
@@ -42,6 +45,16 @@
  }
 }
 \makeatother
+\tikzset{
+    state/.style={
+           rectangle,
+           rounded corners,
+           draw=black, very thick,
+           minimum height=2em,
+           inner sep=2pt,
+           text centered,
+           },
+}	
 
 
 \title[Speaker recognition]{Machine Learning M2 project:\\
@@ -168,6 +181,79 @@ We then used quadratic programming with Matlab to implement a new classifier.
   \right.
 \end{equation}
 \end{block}
+\end{frame}
+
+\begin{frame}
+\begin{figure}
+\begin{tikzpicture}[->,>=stealth']
+
+ % Position of QUERY 
+ % Use previously defined 'state' as layout (see above)
+ % use tabular for content to get columns/rows
+ % parbox to limit width of the listing
+ \node[state] (QUERY) 
+ {\begin{tabular}{l}
+  \\
+  \textbf{Dataset}\\
+  \\[0.6em]
+
+ \end{tabular}};
+  
+ % State: ACK with different content
+ \node[state,    	% layout (defined above)
+  text width=3cm, 	% max text width
+  yshift=2cm, 		% move 2cm in y
+  right of=QUERY, 	% Position is to the right of QUERY
+  node distance=4.5cm, 	% distance to QUERY
+  anchor=center] (ACK) 	% posistion relative to the center of the 'box'
+ {%
+ \begin{tabular}{l} 	% content
+  \textbf{Evaluation Set}\\
+  \parbox{2.8cm}{}
+ \end{tabular}
+ };
+ 
+ % STATE QUERYREP
+ \node[state,
+  below of=ACK,
+  yshift=-2cm,
+  anchor=center,
+  text width=3cm] (QUERYREP) 
+ {%
+ \begin{tabular}{l}
+  \textbf{Validation}\\
+  \parbox{2.8cm}{$2/3$ learning param. $C$\\
+  $1/3$ evaluating $C$}
+ \end{tabular}
+ };
+
+ % STATE EPC
+ \node[state,
+  right of=ACK,
+  node distance=5cm,
+  anchor=center] (EPC) 
+ {%
+ \begin{tabular}{l}
+  \textbf{Final Classifier}\\
+  \parbox{2cm}{+ accuracy}
+ \end{tabular}
+ };
+
+ % draw the paths and and print some Text below/above the graph
+ \path (QUERY) 	edge[bend left=15]  node[anchor=south,above]{split $1/3$} (ACK)
+ (QUERY)     	edge[bend right=10] node[anchor=south,below]{split $2/3$} (QUERYREP)
+ (ACK)       	edge                node[anchor=south,above]{computes}
+ 									node[anchor=south,below]{accuracy} (EPC)
+ (QUERYREP)     edge                node[anchor=left,above]{Final} 
+ 									node[anchor=north,below]{Classifier}          (EPC)   
+ (QUERYREP)  	edge[loop below]    node[anchor=north,below]{best $C$} (QUERYREP)
+ (QUERYREP)  	edge                node[anchor=left,left]{Classifier with}
+ 	                                node[anchor=left,right]{best $C$} (ACK);
+
+
+\end{tikzpicture}
+\caption{How we compute the classifier for SGD}
+\end{figure}
 \end{frame}
 
 \begin{frame}{Quadratic programming: validation}
