@@ -261,6 +261,7 @@ We then used quadratic programming with Matlab to implement a new classifier.
     \end{array}
   \right.
 \end{equation}
+where $G(i,j) = y_i.y_j.k(x_i, x_j)$
 \end{block}
 \end{frame}
 
@@ -268,7 +269,7 @@ We then used quadratic programming with Matlab to implement a new classifier.
 We wanted to optimize the number of Gaussians in the generative model.
 \begin{figure}[!h]
 \includegraphics[width=0.5\textwidth]{../rapport/img/opt_qp_pdf}
-\caption{Variation de la précision en fonction du nombre de gaussiennes}\label{opt_qp}
+\caption{Variation of accuracy depending on the number of gaussians for various speakers}\label{opt_qp}
 \end{figure}
 \end{frame}
 
