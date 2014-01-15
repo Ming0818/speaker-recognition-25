@@ -50,8 +50,31 @@ Nous avons utilisé le langage Python qui nous était le plus familier. Cependan
 \section{Répartition du travail}
 \label{répartition}
 \subsection{Antoine}
+\begin{itemize}
+\item Interface Python/matlab
+\item Test du SGD sur les données réelles
+\item Passage des GMMs en Matlab\footnote{qui ne marchaient pas très bien, ne terminaient jamais sur un de nos ordinateurs et peu souvent sur l'autre} aux GMMs en Python (cf \ref{fisher})
+\item Test du kernel perceptron sur les données réelles
+\end{itemize}
+
 \subsection{Thomas}
+\begin{itemize}
+\item Fonctions de choix des ensembles d'entraînement et d'évaluation
+\item Fonctions d'affichage de graphes (\texttt{plot.py})
+\item Script de récupération et nettoyage des données réelles dans le système de fichiers
+\end{itemize}
+
 \subsection{Ensemble}
+\begin{itemize}
+\item Écriture du svm
+\item Génération de données pour tests
+\item Interface de visualisation des données test en dimension 2
+\item Kernel Perceptron
+\item Récupération des données en .wav; interfaçage Python/octave
+\item Écriture du noyau de Fisher
+\item Programmation quadratique
+\end{itemize}
+
 
 \section{Choix des données}
 Nous avons pu disposer de 5 enregistrements de personnes lisant tous la même série de 12 phrases.
@@ -156,6 +179,7 @@ où $G$ est la matrice de terme général $G_{ij} =  y_i y_j x_i^\top x_j$,
 \section{Noyau de Fisher}
 \label{fisher}
 \subsection{GMM}
+\label{gmm}
 Le noyau de Fisher est construit à partir de modèles générateurs, dans notre cas, un GMM\footnote{Gaussian Mixture Model}.
 Celui-ci produit à partir des données d'entraînement des paramètres $\theta_0 = \lbrace \mu_m^0, \sigma_m, \pi_m \rbrace_{m=1}^M$ décrivant $M$ gaussiennes\footnote{C'est-à-dire plus précisément de vecteurs gaussiens, dans le cas général où les données sont en dimension $k$.} de moyenne $\mu_m$ et de variance $\sigma_m$, et qui sont une approximation de la distribution des données.
 
