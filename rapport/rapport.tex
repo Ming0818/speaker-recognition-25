@@ -326,10 +326,12 @@ Nous avons lancé des tests sur plusieurs valeurs des paramètres à ajuster. No
 \end{figure}
 
 \section{Résultats}
+\label{imitateur}
 \subsection{Imitateur}
 \paragraph{SGD}
-Avec l'algorithme sgd, en fixant le paramètre $C$ à $2$ et en apprenant sur 40\% des données, le taux d'échec est de $0.08$ et $0.01$ pour chacun de nous contre la personnalité politique alors que l'imitateur obtient un taux d'echec de $0.26$ : il est donc plus proche qu'une voix normale moyenne de la personnalité politique.
-\label{imitateur}
+Avec l'algorithme sgd, en fixant le paramètre $C$ à $2$ et en apprenant sur 40\% des données, le taux d'échec est de $0.08$ et $0.01$ pour chacun de nous contre la personnalité politique alors que l'imitateur obtient un taux d'echec de $0.26$ : il est donc plus proche qu'une voix normale moyenne de la personnalité politique. 
+
+Enfin, avec le classifieur final, on obtient un faux positif sur 13 échantillons liés à l'imitateur et un faux négatif pour 14 tests sur des échantillons liés à la personnalité politique ce qui correspond à un taux de réussite d'environ 92\%.
 
 \bibliographystyle{plain}
 \bibliography{rapport}
